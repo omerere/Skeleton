@@ -1,8 +1,9 @@
+#include "Simulation.h"
 #include <iostream>
 
 using namespace std;
 
-//Simulation* backup = nullptr;
+Simulation* backup = nullptr;
 
 int main(int argc, char** argv){
     if(argc!=2){
@@ -17,6 +18,4 @@ int main(int argc, char** argv){
     // 	backup = nullptr;
     // }
     return 0;
-
-    
 }
