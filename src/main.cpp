@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Simulation* backup = nullptr;
+//Simulation* backup = nullptr;
 
 int main(int argc, char** argv){
     if(argc!=2){
