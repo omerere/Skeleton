@@ -33,15 +33,43 @@ void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy)
     this->selectionPolicy = selectionPolicy;
 }
 
-// Step method (placeholder logic)
-void Plan::step()
-{
-    // Add your logic to progress the plan
-    // basically: step in designated selection policy
-    cout << "Plan is stepping... update states here." << endl;
+void Plan::step() {
+    // Step 1: Use the selection policy to select and add facilities
+    if (status == PlanStatus::AVAILABLE) {
+        const FacilityType &facilityType = selectionPolicy->selectFacility(facilityOptions);
+        Facility *newFacility = new Facility(facilityType, settlement.getName());
+        addFacility(newFacility); 
+    }
+
+    // Step 2: Update facilities' progress and status
+    for (int i = 0; i < underConstruction.size(); i++) {
+        Facility *facility = underConstruction[i];
+        FacilityStatus updatedStatus = facility->step();
+    
+        if (updatedStatus == FacilityStatus::OPERATIONAL) {
+            // Update scores
+            life_quality_score += facility->getLifeQualityScore();
+            economy_score += facility->getEconomyScore();
+            environment_score += facility->getEnvironmentScore();
+            underConstruction.erase( std::next(underConstruction.begin(), i) );
+        }
+    }
+
+    // Step 4: Update the plan's status based on remaining under-construction facilities
+    status = PlanStatus::BUSY; 
+    if (settlement.getType() == SettlementType::VILLAGE && underConstruction.size() < 1)    {
+        status = PlanStatus::AVAILABLE;
+    }
+    else if (settlement.getType() == SettlementType::CITY && underConstruction.size() < 2)
+    {
+        status = PlanStatus::AVAILABLE; 
+   }
+    else if (settlement.getType() == SettlementType::METROPOLIS && underConstruction.size() < 3)
+    {
+        status = PlanStatus::AVAILABLE;
+    }
 }
 
-// Print status of the plan
 // this is a place holder, to be implemented with "PrintPlanStatus" base action
 void Plan::printStatus()
 {
